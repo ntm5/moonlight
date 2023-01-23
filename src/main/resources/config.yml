@@ -1,0 +1,32 @@
+## ShipBattle configuration ##
+
+water_interaction_listener_frequency: 15
+default_balance: 20
+captain_health: 300
+cannonball_explosion_strength: 4.0
+
+rewards:
+    participation: 5
+    win: 20
+    kill: 2
+    block_destroy: 0.3
+    first_blood: 5
+    captain_kill: 15
+
+cannon:
+    base_block_material: IRON_BLOCK
+    length: 4
+
+cooldowns:
+    game_start: 20
+    supply: 60
+    respawn: 5
+    timer: 1800
+
+database:
+    host: example.com
+    port: 3306
+    name: database
+    table: shipbattle_balances
+    username: user
+    password: password

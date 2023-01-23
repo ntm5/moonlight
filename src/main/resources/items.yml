@@ -1,0 +1,255 @@
+items:
+    pirate_sword:
+        material: WOODEN_SWORD
+        display_name: '§bKalózok kardja'
+        unbreakable: true
+        enchantments:
+            DAMAGE_ALL: 1
+
+    pirate_bow:
+          material: BOW
+          unbreakable: true
+          enchantments:
+            ARROW_DAMAGE: 1
+            ARROW_INFINITE: 1
+
+    pirate_helmet:
+        material: LEATHER_HELMET
+        leather_color: 0;0;0
+        unbreakable: true
+
+    pirate_chestplate:
+        material: LEATHER_CHESTPLATE
+        unbreakable: true
+
+    pirate_leggings:
+        material: LEATHER_LEGGINGS
+        leather_color: 0;0;0
+        unbreakable: true
+
+    pirate_boots:
+        material: LEATHER_BOOTS
+        leather_color: 0;0;0
+        unbreakable: true
+
+    navy_sword:
+        material: WOODEN_SWORD
+        display_name: '§bMatróz kard'
+        unbreakable: true
+        enchantments:
+            DAMAGE_ALL: 1
+
+    navy_bow:
+        material: BOW
+        unbreakable: true
+        enchantments:
+            ARROW_DAMAGE: 1
+            ARROW_INFINITE: 1
+
+    navy_helmet:
+        material: LEATHER_HELMET
+        leather_color: 69;74;46
+        unbreakable: true
+
+    navy_chestplate:
+        material: LEATHER_CHESTPLATE
+        leather_color: 119;106;45
+        unbreakable: true
+
+    navy_leggings:
+        material: LEATHER_LEGGINGS
+        leather_color: 131;126;94
+        unbreakable: true
+
+    navy_boots:
+        material: LEATHER_BOOTS
+        leather_color: 87;73;62
+        unbreakable: true
+
+    arrow:
+        material: ARROW
+
+    diamond_projectile:
+        material: DIAMOND_BLOCK
+        display_name: 'Gyémánt lövedék'
+        lores:
+            - '§f§lHatás: §bSzétrobbantja'
+            - '§ba blokkokat becsapódás után.'
+            - ' '
+            - '§b§oRakd be ezt az ágyú'
+            - '§b§oeszközkeretébe, nyomd'
+            - '§b§omeg a gombot, majd'
+            - '§b§océlozz és nyomd meg a'
+            - '§b§obal egérgombot a'
+            - '§b§okilövéshez.'
+
+    gold_projectile:
+        material: GOLD_BLOCK
+        display_name: '§fArany lövedék'
+        lores:
+            - '§f§lHatás: §bEgy három és'
+            - '§bfél blokkos körzetben'
+            - '§bfüstöt okoz, és elvakítja'
+            - '§ba játékosokat'
+            - ' '
+            - '§b§oRakd be ezt az ágyú'
+            - '§b§oeszközkeretébe, nyomd'
+            - '§b§omeg a gombot, majd'
+            - '§b§océlozz és nyomd meg a'
+            - '§b§obal egérgombot a'
+            - '§b§okilövéshez.'
+
+    lapis_projectile:
+        material: LAPIS_BLOCK
+        display_name: 'Lazurit lövedék'
+        lores:
+            - '§f§lHatás: §bTüzet indít'
+            - '§ba becsapódás után.'
+            - ' '
+            - '§b§oRakd be ezt az ágyú'
+            - '§b§oeszközkeretébe, nyomd'
+            - '§b§omeg a gombot, majd'
+            - '§b§océlozz és nyomd meg a'
+            - '§b§obal egérgombot a'
+            - '§b§okilövéshez.'
+
+    shop_enderpearl:
+        material: ENDER_PEARL
+        display_name: '§bVéggyöngy'
+
+    shop_stone_sword:
+        material: STONE_SWORD
+        display_name: 'Kőkard'
+        unbreakable: true
+        enchantments:
+            KNOCKBACK: 1
+            DAMAGE_ALL: 2
+
+    shop_bow:
+        material: BOW
+        display_name: '§6Mester íj'
+        unbreakable: true
+        enchantments:
+            ARROW_DAMAGE: 2
+            ARROW_FIRE: 2
+            ARROW_INFINITE: 1
+
+    shop_heal_potion:
+        material: POTION
+        display_name: 'Gyógyítás bájital'
+        data_value: 8261
+        amount: 3
+
+    shop_regen_potion:
+        material: POTION
+        display_name: 'Regeneráció bájital'
+        data_value: 8193
+
+    shop_poison:
+        material: POTION
+        amount: 3
+        display_name: 'Méreg bájital'
+        data_value: 16388
+
+    shop_golden_apple:
+        material: GOLDEN_APPLE
+        display_name: 'Aranyalma'
+
+#added by TeddyBear_2004 on 2022.07.18
+    shop_detox_potion:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        amount: 1
+        meta:
+            ==: ItemMeta
+            meta-type: POTION
+            display-name: §6Méregtelenítő
+            potion-type: minecraft:water_breathing
+            duration: 10
+
+    choose_team:
+        material: COMPASS
+        display_name: '§cCsapat választása'
+
+    join_navy:
+        material: WOOL
+        data_value: 5
+        display_name: '§b§lBelépés a §Matrózok§b csapatába'
+
+    join_pirates:
+        material: WOOL
+        data_value: 14
+        display_name: '§b§lBelépés a §cKalózok§b csapatába'
+
+    join_random:
+        material: WOOL
+        data_value: 8
+        display_name: '§f§lVéletlenszerű csapat választása'
+
+
+inventories:
+    navy:
+        0: navy_sword
+        1: navy_bow
+        2: arrow
+        helmet: navy_helmet
+        chestplate: navy_chestplate
+        leggings: navy_leggings
+        boots: navy_boots
+
+    pirate:
+        0: pirate_sword
+        1: pirate_bow
+        2: arrow
+        helmet: pirate_helmet
+        chestplate: pirate_chestplate
+        leggings: pirate_leggings
+        boots: pirate_boots
+
+#rearranged/added by TeddyBear_2004 on 2022.07.18
+shop:
+    3:
+        item: shop_enderpearl
+        price: 30
+    5:
+        item: shop_poison
+        price: 80
+    11:
+        item: shop_stone_sword
+        price: 150
+    13:
+        item: shop_bow
+        price: 140
+    15:
+        item: shop_golden_apple
+        price: 70
+    21:
+        item: shop_heal_potion
+        price: 60
+    22:
+        item: shop_regen_potion
+        price: 70
+    23:
+        item: shop_detox_potion
+        price: 100
+
+
+projectiles:
+    1:
+        item: diamond_projectile
+        effect: EXPLOSION
+    2:
+        item: diamond_projectile
+        effect: EXPLOSION
+    3:
+        item: gold_projectile
+        effect: SMOKE
+    4:
+        item: lapis_projectile
+        effect: FIRE
+
+lobby:
+    team_chooser_item: choose_team
+    navy_item: join_navy
+    pirates_item: join_pirates
+    random_item: join_random

@@ -1,0 +1,33 @@
+name: ShipBattle
+author: Baalint04
+main: com.moonlight.shipbattle.Main
+version: 2.19.1
+api-version: 1.18
+load: POSTWORLD
+softdepend: [Multiverse-Core]
+depend: [WorldEdit]
+
+commands:
+  sb:
+    description: A ShipBattle plugin parancsa.
+    usage: Hiba tötént a parancs végrehajtása közben.
+
+permissions:
+  shipbattle.*:
+    description: Jog a ShipBattle plugin összes parancsához.
+    children:
+      shipbattle.play: true
+      shipbattle.admin: true
+      shipbattle.setup: true
+
+  shipbattle.play:
+    description: Jog egy ShipBattle játékba való belépéshez.
+    default: true
+
+  shipbattle.admin:
+    description: Jog a ShipBattle plugin összes admin parancsához.
+    default: op
+
+  shipbattle.setup:
+    description: Jog a ShipBattle plugin setup parancsaihoz.
+    default: op
