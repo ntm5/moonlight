@@ -9,6 +9,8 @@ import com.moonlight.shipbattle.logging.Logging;
 import com.moonlight.shipbattle.shop.Shop;
 import com.moonlight.shipbattle.shop.ShopItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.inventory.InventoryType;
@@ -17,12 +19,15 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 public class ItemConfiguration {
     private static FileConfiguration config;
     private static File configFile;
+    public static List<Material> materialList = new ArrayList<>();
 
     static void load() throws ItemLoadException {
         if (ItemConfiguration.configFile == null) {
@@ -36,6 +41,7 @@ public class ItemConfiguration {
         Shop.load();
         loadProjectiles();
         loadLobbyItems();
+        loadBuildBlocks();
     }
 
     private static ItemStack loadItemStack(final String name) throws ItemLoadException {
@@ -89,7 +95,6 @@ public class ItemConfiguration {
                 }
                 default:{
                     inventory.setItemStack(Integer.parseInt(key), loadItemStack(ItemConfiguration.config.getString(path + "." + key)));
-                    continue;
                 }
             }
         }
@@ -124,7 +129,13 @@ public class ItemConfiguration {
     private static void loadProjectiles() throws ItemLoadException {
         for (final String name : ItemConfiguration.config.getConfigurationSection("projectiles").getKeys(false)) {
             ProjectileType.getList().add(loadProjectile(name));
+            Bukkit.getLogger().info(name);
         }
+    }
+
+    private static void loadBuildBlocks() throws ItemLoadException {
+        List<String> names = ItemConfiguration.config.getStringList("build_blocks");
+        names.forEach(name -> materialList.add(Material.matchMaterial(name)));
     }
 
     private static void loadLobbyItems() throws ItemLoadException {

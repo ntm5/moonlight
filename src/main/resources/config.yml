@@ -4,6 +4,7 @@ water_interaction_listener_frequency: 15
 default_balance: 20
 captain_health: 300
 cannonball_explosion_strength: 4.0
+coins_per_emerald: 5
 
 rewards:
     participation: 5
@@ -12,6 +13,9 @@ rewards:
     block_destroy: 0.3
     first_blood: 5
     captain_kill: 15
+    top1: 5
+    top2: 3
+    top3: 1
 
 cannon:
     base_block_material: IRON_BLOCK

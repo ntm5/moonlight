@@ -14,10 +14,13 @@ class GetBalanceMapTask extends BukkitRunnable
 {
     private final List<String> players;
     private final BalanceMapReceivedListener listener;
-    
-    GetBalanceMapTask(final List<String> players, final BalanceMapReceivedListener listener) {
+    private final String query;
+
+
+    GetBalanceMapTask(final List<String> players, final BalanceMapReceivedListener listener, String query) {
         this.players = players;
         this.listener = listener;
+        this.query = query;
     }
     
     public void run() {
@@ -25,7 +28,7 @@ class GetBalanceMapTask extends BukkitRunnable
         ResultSet resultSet = null;
         final HashMap<String, Integer> map = new HashMap<String, Integer>(this.players.size());
         try {
-            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(EconomyDatabase.GET_QUERY);
+            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(query);
             for (final String player : this.players) {
                 preparedStatement.setString(1, player);
                 resultSet = preparedStatement.executeQuery();

@@ -2,6 +2,7 @@ package com.moonlight.shipbattle;
 
 import java.util.Random;
 
+import com.moonlight.shipbattle.configuration.ItemConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,6 +33,11 @@ public class Supply
         if (Math.random() <= 0.5) {
             inventory.setItem(12, new ItemStack(Material.BUCKET, 1));
         }
+
+        if (Math.random() <= 0.5) {
+            inventory.setItem(11, new ItemStack(ItemConfiguration.materialList.get(new Random().nextInt(ItemConfiguration.materialList.size()))));
+        }
+
         if (Math.random() <= 0.4) {
             inventory.setItem(12, new ItemStack(Material.MILK_BUCKET, 1));
         }

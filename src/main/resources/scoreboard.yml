@@ -1,0 +1,20 @@
+lobby:
+  title: "ServerName"
+  display:
+    - "Player: {player_name}"
+    - "Gold: {player_gold}"
+    - "Emeralds: {player_emeralds}"
+
+queue:
+  title: "ServerName"
+  display:
+    - "Player: {player_name}"
+    - "Gold: {player_gold}"
+    - "Emeralds: {player_emeralds}"
+
+in-game:
+  title: "ServerName"
+  display:
+    - "Player: {player_name}"
+    - "Gold: {player_gold}"
+    - "Emeralds: {player_emeralds}"

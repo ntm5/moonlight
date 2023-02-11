@@ -124,6 +124,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.black_ixx.playerpoints</groupId>
+
+            <artifactId>PlayerPoints</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/PlayerPoints-3.2.5.jar</systemPath>
+
+        </dependency>
     </dependencies>
 
 

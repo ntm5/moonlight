@@ -112,12 +112,6 @@ public class WorldEventListener implements Listener {
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
         Material type = event.getBlock().getType();
-
-        if (type == Material.LADDER
-                /*|| type == Configuration.cannonBaseBlockMaterial
-                || Utils.isButton(type)*/) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler

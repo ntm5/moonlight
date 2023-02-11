@@ -84,6 +84,12 @@ class CommandManager implements CommandExecutor
                 }
                 return true;
             }
+            else if (args[0].equalsIgnoreCase("exchange")) {
+                if (!(sender instanceof Player))
+                    return false;
+                new GuiInventory().openInventory((Player) sender);
+                return true;
+            }
             else {
                 if (args[0].equalsIgnoreCase(LangConfiguration.getString("commands.admin.label"))) {
                     if (!sender.hasPermission("shipbattle.admin")) {
@@ -216,18 +222,11 @@ class CommandManager implements CommandExecutor
                     }
                 }
 
-                if (args[0].equalsIgnoreCase("moonlight")) {
-                    if (sender instanceof Player player) {
-                        player.sendMessage("Moonlight dev.");
-                    }
-                }
-
                 if (args[0].equalsIgnoreCase(LangConfiguration.getString("commands.setup.label"))) {
-                    if (!(sender instanceof Player)) {
+                    if (!(sender instanceof final Player player)) {
                         sender.sendMessage(Main.prefix + LangConfiguration.getString("commands.error.only_players"));
                         return true;
                     }
-                    final Player player = (Player)sender;
                     if (!sender.hasPermission("shipbattle.setup")) {
                         sender.sendMessage(Main.prefix + LangConfiguration.getString("commands.error.no_permission"));
                         return true;

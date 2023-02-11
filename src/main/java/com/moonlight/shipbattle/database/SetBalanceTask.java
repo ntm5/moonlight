@@ -11,16 +11,19 @@ class SetBalanceTask extends BukkitRunnable
 {
     private final String player;
     private final int balance;
-    
-    SetBalanceTask(final String player, final int balance) {
+    private final String query;
+
+
+    SetBalanceTask(final String player, final int balance, String query) {
         this.player = player;
         this.balance = balance;
+        this.query = query;
     }
     
     public void run() {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(EconomyDatabase.UPDATE_QUERY);
+            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(query);
             preparedStatement.setString(1, this.player);
             preparedStatement.setInt(2, this.balance);
             preparedStatement.executeUpdate();

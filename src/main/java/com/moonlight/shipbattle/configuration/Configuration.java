@@ -28,6 +28,10 @@ public class Configuration
     public static String database_port;
     public static String database_username;
     public static String database_password;
+    public static int top_1;
+    public static int top_2;
+    public static int top_3;
+    public static int coin_per_emerald;
     
     public static void load() throws IOException, ItemLoadException {
         Main.getMain().saveDefaultConfig();
@@ -35,6 +39,7 @@ public class Configuration
         loadOptions();
         ArenaConfiguration.load();
         ItemConfiguration.load();
+        ScoreboardConfiguration.load();
     }
     
     public static void reload() throws IOException, ItemLoadException {
@@ -47,6 +52,10 @@ public class Configuration
     
     private static void loadOptions() {
         Configuration.defaultBalance = Main.getMain().getConfig().getInt("default_balance");
+        Configuration.top_1 = Main.getMain().getConfig().getInt("rewards.top1");
+        Configuration.top_2 = Main.getMain().getConfig().getInt("rewards.top2");
+        Configuration.top_3 = Main.getMain().getConfig().getInt("rewards.top3");
+        Configuration.coin_per_emerald = Main.getMain().getConfig().getInt("coins_per_emerald");
         Configuration.captainHealth = Main.getMain().getConfig().getDouble("captain_health");
         Configuration.cannonballExplosionStrength = (float)Main.getMain().getConfig().getDouble("cannonball_explosion_strength");
         Configuration.participation = Main.getMain().getConfig().getInt("rewards.participation");

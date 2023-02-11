@@ -8,12 +8,15 @@ import com.moonlight.shipbattle.cannon.Cannon;
 import com.moonlight.shipbattle.cannon.ShootSession;
 import com.moonlight.shipbattle.cannon.projectile.ProjectileType;
 import com.moonlight.shipbattle.configuration.ItemConfiguration;
+import com.moonlight.shipbattle.database.BalanceReceivedListener;
+import com.moonlight.shipbattle.database.EmeraldTask;
 import com.moonlight.shipbattle.logging.Logging;
 import com.moonlight.shipbattle.shop.Shop;
 import com.moonlight.shipbattle.teams.Team;
 import org.bukkit.*;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
@@ -27,8 +30,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.bukkit.event.Listener;
@@ -209,6 +214,18 @@ public class PlayerListener implements Listener
         for (ProjectileType type : ProjectileType.getList()) {
             if (type.getItemStack().getType() == event.getBlock().getType())
                 event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Game.getGame(event.getEntity()).kills.putIfAbsent(event.getEntity().getKiller(), Game.getGame(event.getEntity()).kills.get(event.getEntity()) == null ? 1 : Game.getGame(event.getEntity()).kills.get(event.getEntity()) + 1);
+    }
+
+    @EventHandler
+    public void onPlayerJoinEvent(PlayerJoinEvent event) throws SQLException {
+        if (!event.getPlayer().hasPlayedBefore()) {
+            new EmeraldTask().setBalance(event.getPlayer().getName(), 0);
         }
     }
 }

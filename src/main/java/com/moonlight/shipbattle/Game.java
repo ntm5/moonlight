@@ -4,9 +4,12 @@ import com.moonlight.shipbattle.configuration.ArenaConfiguration;
 import com.moonlight.shipbattle.configuration.Configuration;
 import com.moonlight.shipbattle.configuration.LangConfiguration;
 import com.moonlight.shipbattle.database.EconomyDatabase;
+import com.moonlight.shipbattle.database.EmeraldTask;
 import com.moonlight.shipbattle.logging.Logging;
 import com.moonlight.shipbattle.teams.Team;
 import com.moonlight.shipbattle.teams.TeamType;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,9 +24,11 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -44,10 +49,12 @@ public class Game implements Listener {
     private LocalTime remainingTime;
     private final DateTimeFormatter formatter;
     private BukkitTask timerTask;
+    public Map<Player, Integer> kills;
 
     Game(final Arena arena) {
+        this.kills = new HashMap<>();
         this.status = Status.WAITING;
-        this.lootTimes = new HashMap<Player, Long>();
+        this.lootTimes = new HashMap<>();
         this.firstBloodDrawn = false;
         this.teams = new Team[2];
         this.remainingTime = LocalTime.ofSecondOfDay(Configuration.timer);
@@ -55,8 +62,8 @@ public class Game implements Listener {
         Logging.getLogger().info("Initialising game: " + this.hashCode());
         this.arena = arena;
         final int maxPlayers = arena.getMaxPlayers() * 2;
-        this.players = new ArrayList<Player>(maxPlayers);
-        this.balances = new HashMap<Player, Integer>(maxPlayers);
+        this.players = new ArrayList<>(maxPlayers);
+        this.balances = new HashMap<>(maxPlayers);
         this.lobby = new Lobby(this);
         this.communicator = new Communicator(this);
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -328,6 +335,36 @@ public class Game implements Listener {
             return;
         }, 160L);
         Logging.getLogger().log(Level.INFO, "[1] {0}: ended endTaskId={1}(1)", new Object[]{this, endId});
+
+        List<Player> keys = this.kills.entrySet().stream().sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()).limit(3).map(Map.Entry::getKey).toList();
+
+        for (int i = 0; i <= keys.size(); i++) {
+            switch (i + 1) {
+                case 1 -> {
+                    try {
+                        AtomicInteger value = new AtomicInteger(0);
+                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
+                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_1);
+                    } catch (SQLException ignored) {}
+                }
+                case 2 -> {
+                    try {
+                        AtomicInteger value = new AtomicInteger(0);
+                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
+                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_2);
+                    } catch (SQLException ignored) {}
+                }
+                case 3 -> {
+                    try {
+                        AtomicInteger value = new AtomicInteger(0);
+                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
+                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_3);
+                    } catch (SQLException ignored) {}
+                }
+            }
+        }
+
+
     }
 
     public static final Map<UUID, Integer> integerMap = new HashMap<>();

@@ -12,15 +12,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 class SetBalanceMapTask extends BukkitRunnable
 {
     private final Map<String, Integer> map;
-    
-    SetBalanceMapTask(final Map<String, Integer> map) {
+    private final String query;
+
+
+    SetBalanceMapTask(final Map<String, Integer> map, String query) {
         this.map = map;
+        this.query = query;
     }
     
     public void run() {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(EconomyDatabase.UPDATE_QUERY);
+            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(query);
             for (final Map.Entry<String, Integer> entry : this.map.entrySet()) {
                 preparedStatement.setString(1, entry.getKey());
                 preparedStatement.setInt(2, entry.getValue());

@@ -248,6 +248,10 @@ projectiles:
         item: lapis_projectile
         effect: FIRE
 
+build_blocks:
+   - "STONE"
+   - "DIAMOND_ORE"
+
 lobby:
     team_chooser_item: choose_team
     navy_item: join_navy

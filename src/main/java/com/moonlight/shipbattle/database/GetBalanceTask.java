@@ -13,17 +13,19 @@ class GetBalanceTask extends BukkitRunnable
 {
     private final String player;
     private final BalanceReceivedListener listener;
+    private final String query;
     
-    GetBalanceTask(final String player, final BalanceReceivedListener listener) {
+    GetBalanceTask(final String player, final BalanceReceivedListener listener, String query) {
         this.player = player;
         this.listener = listener;
+        this.query = query;
     }
     
     public void run() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(EconomyDatabase.GET_QUERY);
+            preparedStatement = EconomyDatabase.getDatabase().getConnection().prepareStatement(query);
             preparedStatement.setString(1, this.player);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

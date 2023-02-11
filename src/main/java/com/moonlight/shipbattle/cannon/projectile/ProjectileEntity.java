@@ -94,7 +94,6 @@ public class ProjectileEntity extends FallingBlockEntity {
             if (!this.onGround && !flag2) {
                 if ((this.tickCount > 100 && (blockposition.getY() < 1 || blockposition.getY() > 256)) || this.tickCount > 600) {
                     this.discard();
-                    Bukkit.getLogger().severe("Debug 2");
 
                 }
             }else{
@@ -106,8 +105,7 @@ public class ProjectileEntity extends FallingBlockEntity {
                 if (!iblockdata.is(Blocks.MOVING_PISTON)) {
                     this.discard();
                     this.playEffect();
-                    Bukkit.getLogger().severe("Debug 3");
-
+                    return;
                 }
             }
         }
@@ -118,7 +116,6 @@ public class ProjectileEntity extends FallingBlockEntity {
         net.minecraft.world.level.material.Material material = type1.getMaterial();
 
         if (this.xOld == getX() || this.zOld == getZ() || material != net.minecraft.world.level.material.Material.AIR) {
-            Bukkit.getLogger().severe("Debug 4");
             this.discard();
             this.playEffect();
         }
@@ -155,6 +152,8 @@ public class ProjectileEntity extends FallingBlockEntity {
         Objects.requireNonNull(location.getWorld()).playSound(location, Sound.BLOCK_STONE_FALL, 1.0f, 1.0f);
         location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
         location.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, location, 2);
+
+
         switch (this.type.getEffect()) {
             case EXPLOSION -> this.playExplosionEffect();
             case FIRE -> this.playFireEffect();
@@ -164,22 +163,14 @@ public class ProjectileEntity extends FallingBlockEntity {
     }
 
     private void playExplosionEffect() {
-        Explosion explosion = new Explosion(this.level, this, null, null, this.xOld, this.yOld / 2.0f, this.zOld, Configuration.cannonballExplosionStrength, false, Explosion.BlockInteraction.DESTROY);
-
+        //this.level.getWorld().createExplosion(this.xo, this.yo, this.zo, Configuration.cannonballExplosionStrength);
+        Explosion explosion = new Explosion(this.level, this, null, null, this.xo, this.yo, this.zo, Configuration.cannonballExplosionStrength, false, Explosion.BlockInteraction.DESTROY);
         explosion.explode();
 
         List<BlockPos> blocks = explosion.getToBlow();
         List<BlockPos> toRemove = new ArrayList<>();
 
-        blocks.forEach(blockPosition -> {
-            Location location = new Location(this.level.getWorld(), blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
 
-            if (location.getBlock().getType() == Material.LADDER) {
-                toRemove.add(blockPosition);
-            }
-        });
-
-        blocks.removeAll(toRemove);
         explosion.finalizeExplosion(true);
     }
 

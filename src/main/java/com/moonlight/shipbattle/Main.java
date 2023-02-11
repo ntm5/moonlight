@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.moonlight.shipbattle.database.EmeraldTask;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -76,6 +77,8 @@ public class Main extends JavaPlugin
         try {
             EconomyDatabase.setup();
             new EconomyDatabase();
+            EmeraldTask.setup();
+            new EmeraldTask();
         }
         catch (SQLException e4) {
             this.log.severe("[ShipBattle] " + LangConfiguration.getString("config.economy_error"));
@@ -86,6 +89,7 @@ public class Main extends JavaPlugin
         }
         this.log.info("[ShipBattle] Sikeresen elind\u00edtva.");
         Logging.getLogger().info("started successfully");
+        getServer().getPluginManager().registerEvents(new GuiInventory(), this);
     }
     
     public void onDisable() {

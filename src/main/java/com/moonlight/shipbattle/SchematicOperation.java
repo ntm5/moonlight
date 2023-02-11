@@ -82,8 +82,8 @@ class SchematicOperation
     
     private void loadSchematic(WorldEditPlugin we, String name, File file, World w) {
         final EditSession editSession = we.getWorldEdit().newEditSessionBuilder().world(new BukkitWorld(w)).maxBlocks(-1).build();
-        editSession.getExtent().enableQueue();
-        try {
+        try (editSession) {
+            editSession.getExtent().enableQueue();
             ClipboardReader reader = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(file));
             Clipboard clipboard = reader.read();
             ClipboardHolder ch = new ClipboardHolder(clipboard);
@@ -96,8 +96,6 @@ class SchematicOperation
             e.printStackTrace();
             this.outcome = Outcome.ERROR;
             Main.getMain().getLogger().severe("[Haj\u00f3Csata] " + LangConfiguration.getString("schematic.error").replace("$a", name).replace("$b", e.getMessage()));
-        } finally {
-        	editSession.close();
         }
     }
     

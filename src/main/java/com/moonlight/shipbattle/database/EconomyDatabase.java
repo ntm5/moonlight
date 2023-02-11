@@ -22,8 +22,8 @@ public class EconomyDatabase
     static String UPDATE_QUERY;
     
     public static void setup() {
-        EconomyDatabase.GET_QUERY = "SELECT `balance` FROM `$` WHERE `player` = ?".replace("$", Configuration.database_table);
-        EconomyDatabase.UPDATE_QUERY = "INSERT INTO `$` (player, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE balance = VALUES(balance);".replace("$", Configuration.database_table);
+        EconomyDatabase.GET_QUERY = "SELECT `balance` FROM `emerald_economy` WHERE `player` = ?";
+        EconomyDatabase.UPDATE_QUERY = "INSERT INTO `emerald_economy` (player, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE balance = VALUES(balance);";
     }
     
     public EconomyDatabase() throws SQLException {
@@ -38,21 +38,21 @@ public class EconomyDatabase
     }
     
     public void setBalance(final String player, final int balance) {
-        new SetBalanceTask(player, balance).runTaskAsynchronously((Plugin) Main.getMain());
+        new SetBalanceTask(player, balance, UPDATE_QUERY).runTaskAsynchronously((Plugin) Main.getMain());
     }
     
     public void getBalance(final String player, final BalanceReceivedListener listener) {
-        new GetBalanceTask(player, listener).runTaskAsynchronously((Plugin)Main.getMain());
+        new GetBalanceTask(player, listener, GET_QUERY).runTaskAsynchronously((Plugin)Main.getMain());
     	//listener.onFinished(8700); // test only
     }
     
     public void getBalances(final List<String> players, final BalanceMapReceivedListener listener) {
-        new GetBalanceMapTask(players, listener).runTaskAsynchronously((Plugin)Main.getMain());
+        new GetBalanceMapTask(players, listener, GET_QUERY).runTaskAsynchronously(Main.getMain());
     	//listener.onFinished(players.stream().collect(Collectors.toMap(f -> f, f -> 8700))); // test only
     }
     
     public void setBalances(final Map<String, Integer> map) {
-        new SetBalanceMapTask(map).runTaskAsynchronously((Plugin)Main.getMain());
+        new SetBalanceMapTask(map, UPDATE_QUERY).runTaskAsynchronously((Plugin)Main.getMain());
     }
     
     public static EconomyDatabase getDatabase() {
