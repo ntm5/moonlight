@@ -249,8 +249,9 @@ projectiles:
         effect: FIRE
 
 build_blocks:
-   - "STONE"
-   - "DIAMOND_ORE"
+   - "STONE:4"
+   - "DIAMOND_ORE:4"
+   - "WOOD:4"
 
 lobby:
     team_chooser_item: choose_team

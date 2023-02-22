@@ -80,6 +80,14 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>krypton</id>
+            <url>https://repo.kryptonmc.org/releases</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -126,14 +134,16 @@
         </dependency>
         <dependency>
             <groupId>org.black_ixx.playerpoints</groupId>
-
             <artifactId>PlayerPoints</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/PlayerPoints-3.2.5.jar</systemPath>
-
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-
-
 </project>

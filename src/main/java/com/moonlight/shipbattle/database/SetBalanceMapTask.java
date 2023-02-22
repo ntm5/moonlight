@@ -53,5 +53,6 @@ class SetBalanceMapTask extends BukkitRunnable
                 e3.printStackTrace();
             }
         }
+        this.cancel();
     }
 }

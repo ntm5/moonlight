@@ -2,12 +2,12 @@ package com.moonlight.shipbattle;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.moonlight.shipbattle.database.EmeraldTask;
+import com.moonlight.shipbattle.database.EmeraldEconomy;
+import com.moonlight.shipbattle.database.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -33,7 +33,18 @@ public class Main extends JavaPlugin
     private static Main main;
     private final String logPrefix = "[ShipBattle] ";
     private boolean awake;
-    
+    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+    private EmeraldEconomy economy;
+
+    public Map<UUID, PlayerData> getPlayerData() {
+        return this.playerDataMap;
+    }
+
+    public EmeraldEconomy economy() {
+        return this.economy;
+    }
+
+
     public Main() {
         this.log = Logger.getLogger("Minecraft");
         this.awake = false;
@@ -48,6 +59,7 @@ public class Main extends JavaPlugin
             this.log.severe("[ShipBattle] Hiba t\u00f6rt\u00e9nt a logger inicializ\u00e1l\u00e1sa k\u00f6zben.");
             e.printStackTrace();
         }
+
         Logging.getLogger().info("starting version: " + this.getDescription().getVersion());
         try {
             Configuration.load();
@@ -77,8 +89,6 @@ public class Main extends JavaPlugin
         try {
             EconomyDatabase.setup();
             new EconomyDatabase();
-            EmeraldTask.setup();
-            new EmeraldTask();
         }
         catch (SQLException e4) {
             this.log.severe("[ShipBattle] " + LangConfiguration.getString("config.economy_error"));
@@ -90,6 +100,14 @@ public class Main extends JavaPlugin
         this.log.info("[ShipBattle] Sikeresen elind\u00edtva.");
         Logging.getLogger().info("started successfully");
         getServer().getPluginManager().registerEvents(new GuiInventory(), this);
+
+        try {
+            this.economy = new EmeraldEconomy();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        new ScoreboardManager().register();
     }
     
     public void onDisable() {
@@ -101,13 +119,13 @@ public class Main extends JavaPlugin
         if (ArenaConfiguration.signsChanged) {
             ArenaConfiguration.save();
         }
-        this.log.info("[ShipBattle] Sikeresen le\u00e1ll\u00edtva.");
-        Logging.getLogger().info("disalbed successfully");
+        this.log.info("[ShipBattle] Serenes le\u00e1ll\u00edtva.");
+        Logging.getLogger().info("disabled successfully");
         Logging.getInstance().out();
     }
     
     void forceStopGames() {
-        Logging.getLogger().info("force stoppnig games");
+        Logging.getLogger().info("force stopping games");
         Bukkit.getScheduler().cancelTasks(getMain());
         while (Main.games.iterator().hasNext()) {
             Main.games.get(0).forceStop();
@@ -144,6 +162,6 @@ public class Main extends JavaPlugin
     }
     
     static {
-        games = new ArrayList<Game>();
+        games = new ArrayList<>();
     }
 }

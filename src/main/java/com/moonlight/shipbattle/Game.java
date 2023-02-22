@@ -4,31 +4,21 @@ import com.moonlight.shipbattle.configuration.ArenaConfiguration;
 import com.moonlight.shipbattle.configuration.Configuration;
 import com.moonlight.shipbattle.configuration.LangConfiguration;
 import com.moonlight.shipbattle.database.EconomyDatabase;
-import com.moonlight.shipbattle.database.EmeraldTask;
 import com.moonlight.shipbattle.logging.Logging;
 import com.moonlight.shipbattle.teams.Team;
 import com.moonlight.shipbattle.teams.TeamType;
-import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.PlayerPointsAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -78,7 +68,6 @@ public class Game implements Listener {
         Logging.getLogger().info("Game initialized: " + this.toString());
         respawnProtection();
     }
-
 
     public Status getStatus() {
         return this.status;
@@ -163,7 +152,6 @@ public class Game implements Listener {
         this.players.remove(player);
         player.teleport(this.arena.getLocation("outside"));
         InventoryManager.restoreInventory(player);
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         if (this.status == Status.STARTED) {
             this.arena.updateSigns();
             final Team team = Team.getTeam(player);
@@ -214,6 +202,7 @@ public class Game implements Listener {
         }
         Logging.getLogger().log(Level.INFO, "[1] {0}: removed player: {1}", new Object[]{this.toString(), player.getName()});
         this.communicator.broadcastMessage(LangConfiguration.getString("game.quit.broadcast").replace("$a", player.getName()).replace("$b", this.players.size() + "").replace("$c", this.arena.getMaxPlayers() * 2 + ""));
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
     void requestBalances() {
@@ -271,24 +260,23 @@ public class Game implements Listener {
         Logging.getLogger().log(Level.INFO, "[0] {0}: ending reason={1} winner={2}", new Object[]{this, reason, winner});
         this.status = Status.ENDING;
         this.timerTask.cancel();
-        switch(reason){
-            case TEAM_KILLED:{
+        switch (reason) {
+            case TEAM_KILLED -> {
                 final String loser = winner.getEnemyTeam().getType().getPlayerSingular();
                 this.communicator.broadcastTitle(LangConfiguration.getString("game.ended").replace("$a", winner.getType().getPrefix()).replace("$b", winner.getType().getName()), LangConfiguration.getString("game.end.team_killed").replace("$", loser), Communicator.TitleLength.LONG);
-                break;
             }
-            case SHIP_DESTROYED:{
+            case SHIP_DESTROYED -> {
                 final String loser = winner.getEnemyTeam().getType().getPlayerPlural();
                 winner.getSpawn().getWorld().playSound(winner.getEnemyTeam().getSpawn(), Sound.ENTITY_ENDER_DRAGON_DEATH, 30.0f, 1.0f);
                 this.communicator.broadcastTitle(LangConfiguration.getString("game.ended").replace("$a", winner.getType().getPrefix()).replace("$b", winner.getType().getName()), LangConfiguration.getString("game.end.ship_destroyed").replace("$", loser), Communicator.TitleLength.LONG);
                 break;
             }
-            case TEAM_LEFT:{
+            case TEAM_LEFT -> {
                 final String loser = winner.getEnemyTeam().getType().getPlayerSingular();
                 this.communicator.broadcastTitle(LangConfiguration.getString("game.ended").replace("$a", winner.getType().getPrefix()).replace("$b", winner.getType().getName()), LangConfiguration.getString("game.end.team_left").replace("$", loser), Communicator.TitleLength.LONG);
                 break;
             }
-            case TIMES_UP:{
+            case TIMES_UP -> {
                 this.players.forEach(player -> player.playSound(player.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 30.0f, 1.0f));
                 Bukkit.getScheduler().runTaskLater(Main.getMain(), () -> this.players.forEach(player -> player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 30.0f, 1.0f)), 30L);
                 for (final Team team : this.teams) {
@@ -302,7 +290,6 @@ public class Game implements Listener {
                 }
                 final String loser = winner.getEnemyTeam().getType().getPlayerPlural();
                 this.communicator.broadcastTitle(LangConfiguration.getString("game.ended").replace("$a", winner.getType().getPrefix()).replace("$b", winner.getType().getPlayerPlural()), LangConfiguration.getString("game.end.times_up_captain_killed").replace("$", loser), Communicator.TitleLength.LONG);
-                break;
             }
         }
         BukkitTask task = null;
@@ -332,39 +319,24 @@ public class Game implements Listener {
             if (finalTask != null)
                 finalTask.cancel(); //added by TeddyBear_2004
             Logging.getLogger().log(Level.INFO, "[1] {0}: ended (2)", this);
-            return;
         }, 160L);
         Logging.getLogger().log(Level.INFO, "[1] {0}: ended endTaskId={1}(1)", new Object[]{this, endId});
 
         List<Player> keys = this.kills.entrySet().stream().sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()).limit(3).map(Map.Entry::getKey).toList();
 
-        for (int i = 0; i <= keys.size(); i++) {
+        for (int i = 0; i < keys.size(); i++) {
             switch (i + 1) {
                 case 1 -> {
-                    try {
-                        AtomicInteger value = new AtomicInteger(0);
-                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
-                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_1);
-                    } catch (SQLException ignored) {}
+                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_1);
                 }
                 case 2 -> {
-                    try {
-                        AtomicInteger value = new AtomicInteger(0);
-                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
-                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_2);
-                    } catch (SQLException ignored) {}
+                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_2);
                 }
                 case 3 -> {
-                    try {
-                        AtomicInteger value = new AtomicInteger(0);
-                        new EmeraldTask().getBalance(keys.get(i).getName(), value::set);
-                        new EmeraldTask().setBalance(keys.get(i).getName(), value.get() + Configuration.top_3);
-                    } catch (SQLException ignored) {}
+                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_3);
                 }
             }
         }
-
-
     }
 
     public static final Map<UUID, Integer> integerMap = new HashMap<>();

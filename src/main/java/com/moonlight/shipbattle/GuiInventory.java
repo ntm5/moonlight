@@ -1,7 +1,6 @@
 package com.moonlight.shipbattle;
 
 import com.moonlight.shipbattle.configuration.Configuration;
-import com.moonlight.shipbattle.database.EmeraldTask;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
@@ -11,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -49,11 +47,10 @@ public class GuiInventory implements Listener {
         if (event.getInventory().equals(inventory)) {
             event.setCancelled(true);
             if (event.getSlot() == (54 / 2)) {
-                AtomicInteger bal = new AtomicInteger(0);
-                new EmeraldTask().getBalance(event.getWhoClicked().getName(), bal::set);
+                int bal = Main.getMain().getPlayerData().get(event.getWhoClicked().getUniqueId()).emeralds();
                 PlayerPointsAPI api = new PlayerPointsAPI(PlayerPoints.getInstance());
-                api.give(event.getWhoClicked().getUniqueId(), bal.get() * Configuration.coin_per_emerald);
-                new EmeraldTask().setBalance(event.getWhoClicked().getName(), 0);
+                api.give(event.getWhoClicked().getUniqueId(), bal * Configuration.coin_per_emerald);
+                Main.getMain().getPlayerData().get(event.getWhoClicked().getUniqueId()).setEmeralds(-bal * Configuration.coin_per_emerald);
             }
         }
     }

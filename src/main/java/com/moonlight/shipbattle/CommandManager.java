@@ -32,7 +32,7 @@ import java.util.logging.Level;
 class CommandManager implements CommandExecutor
 {
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
-        if (label.equalsIgnoreCase("sb")) {
+        if (label.equalsIgnoreCase("shipbattle") || label.equalsIgnoreCase("sb")) {
             if (args.length <= 0) {
                 sender.sendMessage(LangConfiguration.getString("commands.info").replace("$", Main.getMain().getDescription().getVersion()));
                 return true;
@@ -55,16 +55,16 @@ class CommandManager implements CommandExecutor
                 return true;
             }
             else if (args[0].equalsIgnoreCase(LangConfiguration.getString("commands.leave.label"))) {
-                if (!(sender instanceof Player)) {
+                if (!(sender instanceof final Player player)) {
                     sender.sendMessage(Main.prefix + LangConfiguration.getString("commands.error.only_players"));
                     return true;
                 }
-                final Player player = (Player)sender;
                 final Game game = Game.getGame(player);
                 if (game == null) {
                     player.sendMessage(Main.prefix + LangConfiguration.getString("commands.leave.error.not_in_game"));
                     return true;
                 }
+                Bukkit.getLogger().severe(player.getName() + " is trying to leave game: " + game);
                 game.removePlayer(player, true);
                 return true;
             }

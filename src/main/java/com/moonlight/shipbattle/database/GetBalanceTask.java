@@ -64,5 +64,6 @@ class GetBalanceTask extends BukkitRunnable
                 e2.printStackTrace();
             }
         }
+        this.cancel();
     }
 }

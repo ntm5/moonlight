@@ -27,7 +27,7 @@ import java.util.logging.Level;
 public class ItemConfiguration {
     private static FileConfiguration config;
     private static File configFile;
-    public static List<Material> materialList = new ArrayList<>();
+    public static List<String> materialList = new ArrayList<>();
 
     static void load() throws ItemLoadException {
         if (ItemConfiguration.configFile == null) {
@@ -133,9 +133,8 @@ public class ItemConfiguration {
         }
     }
 
-    private static void loadBuildBlocks() throws ItemLoadException {
-        List<String> names = ItemConfiguration.config.getStringList("build_blocks");
-        names.forEach(name -> materialList.add(Material.matchMaterial(name)));
+    private static void loadBuildBlocks() {
+        materialList = ItemConfiguration.config.getStringList("build_blocks");
     }
 
     private static void loadLobbyItems() throws ItemLoadException {

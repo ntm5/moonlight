@@ -35,7 +35,8 @@ public class Supply
         }
 
         if (Math.random() <= 0.5) {
-            inventory.setItem(11, new ItemStack(ItemConfiguration.materialList.get(new Random().nextInt(ItemConfiguration.materialList.size()))));
+            String value = ItemConfiguration.materialList.get(new Random().nextInt(ItemConfiguration.materialList.size()));
+            inventory.setItem(19, new ItemStack(Material.matchMaterial(value.split(":")[0]), Integer.parseInt(value.split(":")[1])));
         }
 
         if (Math.random() <= 0.4) {

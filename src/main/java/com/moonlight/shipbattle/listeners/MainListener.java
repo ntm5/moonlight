@@ -1,8 +1,6 @@
 package com.moonlight.shipbattle.listeners;
 
-import com.moonlight.shipbattle.Game;
-import com.moonlight.shipbattle.Main;
-import com.moonlight.shipbattle.Utils;
+import com.moonlight.shipbattle.*;
 import com.moonlight.shipbattle.setup.SetupSession;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -15,7 +13,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.moonlight.shipbattle.Arena;
 import com.moonlight.shipbattle.configuration.ArenaConfiguration;
 import com.moonlight.shipbattle.configuration.LangConfiguration;
 

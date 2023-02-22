@@ -1,58 +1,58 @@
 package com.moonlight.shipbattle;
 
-import com.moonlight.shipbattle.configuration.ScoreboardConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import com.moonlight.shipbattle.database.PlayerData;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+public class ScoreboardManager extends PlaceholderExpansion {
 
-public class ScoreboardManager {
-    private final Player player;
-    private final Scoreboard scoreboard;
-    private Objective obj;
-    private final Team team;
-    private ScoreboardState state;
-
-    public ScoreboardManager(Player player, ScoreboardState state) {
-        this.player = player;
-        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.obj = scoreboard.registerNewObjective("ServerName", "dummy", "Test Server");
-        this.obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        this.team = scoreboard.registerNewTeam(player.getUniqueId().toString());
-        this.state = state;
+    @Override
+    public @NotNull String getIdentifier() {
+        return "shipbattle";
     }
 
-    public void setState(ScoreboardState state) {
-        this.state = state;
+    @Override
+    public @NotNull String getAuthor() {
+        return "ntm";
     }
 
-    public void updateScoreboard() {
-        List<String> list = ScoreboardConfiguration.getScoreboard(state);
-        for (int i = 0; i < list.size(); i++) {
-            org.bukkit.scoreboard.Score score = this.obj.getScore(ChatColor.translateAlternateColorCodes('&', ScoreboardConfiguration.parseCode(list.get(i), player)));
-            score.setScore(15 - i);
-        }
-        player.setScoreboard(this.scoreboard);
+    @Override
+    public @NotNull String getVersion() {
+        return "1.0.0";
     }
 
-    public enum ScoreboardState {
-        LOBBY("lobby"),
-        QUEUE("queue"),
-        IN_GAME("in-game");
+    @Override
+    public boolean persist() {
+        return true; // This is required or else PlaceholderAPI will unregister the Expansion on reload
+    }
 
-        private final String s;
+    @Override
+    public String onPlaceholderRequest(Player p, String identifier) {
 
-        ScoreboardState(String s) {
-            this.s = s;
+        PlayerData data = new PlayerData(p.getUniqueId());
+
+        if (identifier.equals("emeralds")) {
+            return String.valueOf(data.emeralds());
+        }
+        if (identifier.equals("gold")) {
+            return new PlayerPointsAPI(PlayerPoints.getInstance()).lookShorthand(p.getUniqueId());
         }
 
-        public String getValue() {
-            return this.s;
+        if (identifier.equals("loses")) {
+            return String.valueOf(data.loses());
         }
+
+        if (identifier.equals("wins")) {
+            return String.valueOf(data.wins());
+        }
+
+        if (identifier.equals("kills")) {
+            return String.valueOf(data.kills());
+        }
+
+        return null;
     }
 }

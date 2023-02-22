@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.List;
 
 import com.moonlight.shipbattle.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.SQLException;
@@ -22,14 +23,14 @@ public class EconomyDatabase
     static String UPDATE_QUERY;
     
     public static void setup() {
-        EconomyDatabase.GET_QUERY = "SELECT `balance` FROM `emerald_economy` WHERE `player` = ?";
-        EconomyDatabase.UPDATE_QUERY = "INSERT INTO `emerald_economy` (player, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE balance = VALUES(balance);";
+        EconomyDatabase.GET_QUERY = "SELECT `balance` FROM `$` WHERE `player` = ?".replace("$", Configuration.database_table);
+        EconomyDatabase.UPDATE_QUERY = "INSERT INTO `$` (player, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE balance = VALUES(balance);".replace("$", Configuration.database_table);
     }
     
     public EconomyDatabase() throws SQLException {
         EconomyDatabase.instance = this;
         final String url = String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s&autoReconnect=true", Configuration.database_host, Configuration.database_port, Configuration.database_name, Configuration.database_username, Configuration.database_password);
-        Logging.getLogger().log(Level.INFO, "Connecting to: {0}", url);
+        Bukkit.getLogger().log(Level.INFO, "Connecting to: {0}", url);
         this.connection = DriverManager.getConnection(url);
     }
     

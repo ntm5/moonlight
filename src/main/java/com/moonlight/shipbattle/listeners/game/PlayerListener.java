@@ -1,21 +1,15 @@
 package com.moonlight.shipbattle.listeners.game;
 
-import com.moonlight.shipbattle.Game;
-import com.moonlight.shipbattle.Main;
-import com.moonlight.shipbattle.Supply;
-import com.moonlight.shipbattle.Utils;
+import com.moonlight.shipbattle.*;
 import com.moonlight.shipbattle.cannon.Cannon;
 import com.moonlight.shipbattle.cannon.ShootSession;
 import com.moonlight.shipbattle.cannon.projectile.ProjectileType;
-import com.moonlight.shipbattle.configuration.ItemConfiguration;
-import com.moonlight.shipbattle.database.BalanceReceivedListener;
-import com.moonlight.shipbattle.database.EmeraldTask;
+import com.moonlight.shipbattle.database.PlayerData;
 import com.moonlight.shipbattle.logging.Logging;
 import com.moonlight.shipbattle.shop.Shop;
 import com.moonlight.shipbattle.teams.Team;
 import org.bukkit.*;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Entity;
@@ -30,10 +24,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.bukkit.event.Listener;
@@ -193,7 +185,7 @@ public class PlayerListener implements Listener
         final Player player = event.getPlayer();
         if (Game.getGame(player) != null && !player.hasPermission("shipbattle.admin")) {
             final String command = event.getMessage().split(" ")[0];
-            if (!command.equalsIgnoreCase("/sb")) {
+            if (!command.equalsIgnoreCase("/shipbattle")) {
                 event.setCancelled(true);
                 player.sendMessage(Main.prefix + LangConfiguration.getString("event.command_not_allowed"));
             }
@@ -219,13 +211,21 @@ public class PlayerListener implements Listener
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getEntity().getKiller() == null)
+            return;
         Game.getGame(event.getEntity()).kills.putIfAbsent(event.getEntity().getKiller(), Game.getGame(event.getEntity()).kills.get(event.getEntity()) == null ? 1 : Game.getGame(event.getEntity()).kills.get(event.getEntity()) + 1);
+        Main.getMain().getPlayerData().get(event.getEntity().getKiller().getUniqueId()).setKills();
     }
 
     @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) throws SQLException {
-        if (!event.getPlayer().hasPlayedBefore()) {
-            new EmeraldTask().setBalance(event.getPlayer().getName(), 0);
-        }
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
+        Main.getMain().economy().createFreshData(event.getPlayer().getUniqueId());
+
+        Main.getMain().getPlayerData().putIfAbsent(event.getPlayer().getUniqueId(), new PlayerData(event.getPlayer().getUniqueId()));
+    }
+
+    @EventHandler
+    public void onPlayerLeaveEvent(PlayerQuitEvent event) {
+        Main.getMain().getPlayerData().remove(event.getPlayer().getUniqueId());
     }
 }
