@@ -5,12 +5,15 @@ version: 2.19.1
 api-version: 1.18
 load: POSTWORLD
 softdepend: [Multiverse-Core]
-depend: [WorldEdit, TAB, PlayerPoints, PlaceholderAPI]
+depend: [WorldEdit, PlayerPoints, PlaceholderAPI]
 
 commands:
   sb:
     description: A ShipBattle plugin parancsa.
     usage: Hiba tötént a parancs végrehajtása közben.
+  debug:
+    description: debug
+    usage: debug
 
 permissions:
   shipbattle.*:

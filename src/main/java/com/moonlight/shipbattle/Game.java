@@ -5,6 +5,7 @@ import com.moonlight.shipbattle.configuration.Configuration;
 import com.moonlight.shipbattle.configuration.LangConfiguration;
 import com.moonlight.shipbattle.database.EconomyDatabase;
 import com.moonlight.shipbattle.logging.Logging;
+import com.moonlight.shipbattle.scoreboard.ScoreboardState;
 import com.moonlight.shipbattle.teams.Team;
 import com.moonlight.shipbattle.teams.TeamType;
 import org.bukkit.*;
@@ -228,6 +229,10 @@ public class Game implements Listener {
     }
 
     void start() {
+        for (Player player : getPlayers()) {
+            Main.getMain().getScoreboardManager().setState(player.getUniqueId(), ScoreboardState.IN_GAME);
+        }
+
         Logging.getLogger().log(Level.INFO, "[0] {0}: starting", this.toString());
         if (this.balances.isEmpty()) {
             Logging.getLogger().log(Level.SEVERE, "[0]: balances is empty, stopping");
@@ -322,20 +327,12 @@ public class Game implements Listener {
         }, 160L);
         Logging.getLogger().log(Level.INFO, "[1] {0}: ended endTaskId={1}(1)", new Object[]{this, endId});
 
-        List<Player> keys = this.kills.entrySet().stream().sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()).limit(3).map(Map.Entry::getKey).toList();
+        for (Player player : winner.getPlayers()) {
+            Main.getMain().getPlayerData().get(player.getUniqueId()).setWins();
+        }
 
-        for (int i = 0; i < keys.size(); i++) {
-            switch (i + 1) {
-                case 1 -> {
-                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_1);
-                }
-                case 2 -> {
-                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_2);
-                }
-                case 3 -> {
-                    Main.getMain().getPlayerData().get(keys.get(i).getUniqueId()).setEmeralds(Configuration.top_3);
-                }
-            }
+        for (Player player : winner.getEnemyTeam().getPlayers()) {
+            Main.getMain().getPlayerData().get(player.getUniqueId()).setLoses();
         }
     }
 

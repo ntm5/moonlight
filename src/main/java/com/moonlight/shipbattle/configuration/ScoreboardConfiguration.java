@@ -1,6 +1,7 @@
 package com.moonlight.shipbattle.configuration;
 
 import com.moonlight.shipbattle.Main;
+import com.moonlight.shipbattle.scoreboard.ScoreboardState;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.List;
 
 public class ScoreboardConfiguration {
     private static FileConfiguration config;
@@ -29,5 +31,9 @@ public class ScoreboardConfiguration {
 
    public static String TITLE_NAME() {
         return config.getString("title");
+   }
+
+   public static List<String> getScoreboard(ScoreboardState state) {
+        return config.getStringList(state.name());
    }
  }

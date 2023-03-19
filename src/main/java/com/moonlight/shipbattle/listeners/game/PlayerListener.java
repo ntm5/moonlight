@@ -213,19 +213,17 @@ public class PlayerListener implements Listener
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntity().getKiller() == null)
             return;
-        Game.getGame(event.getEntity()).kills.putIfAbsent(event.getEntity().getKiller(), Game.getGame(event.getEntity()).kills.get(event.getEntity()) == null ? 1 : Game.getGame(event.getEntity()).kills.get(event.getEntity()) + 1);
-        Main.getMain().getPlayerData().get(event.getEntity().getKiller().getUniqueId()).setKills();
     }
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Main.getMain().economy().createFreshData(event.getPlayer().getUniqueId());
-
         Main.getMain().getPlayerData().putIfAbsent(event.getPlayer().getUniqueId(), new PlayerData(event.getPlayer().getUniqueId()));
     }
 
     @EventHandler
     public void onPlayerLeaveEvent(PlayerQuitEvent event) {
         Main.getMain().getPlayerData().remove(event.getPlayer().getUniqueId());
+        Main.getMain().getScoreboardManager().removePlayer(event.getPlayer().getUniqueId());
     }
 }

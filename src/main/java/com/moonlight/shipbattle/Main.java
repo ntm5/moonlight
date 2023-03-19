@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.moonlight.shipbattle.database.EmeraldEconomy;
 import com.moonlight.shipbattle.database.PlayerData;
+import com.moonlight.shipbattle.scoreboard.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -35,9 +36,14 @@ public class Main extends JavaPlugin
     private boolean awake;
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private EmeraldEconomy economy;
+    private ScoreboardManager manager;
 
     public Map<UUID, PlayerData> getPlayerData() {
         return this.playerDataMap;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return manager;
     }
 
     public EmeraldEconomy economy() {
@@ -48,6 +54,7 @@ public class Main extends JavaPlugin
     public Main() {
         this.log = Logger.getLogger("Minecraft");
         this.awake = false;
+        manager = new ScoreboardManager();
     }
     
     public void onEnable() {
@@ -100,6 +107,7 @@ public class Main extends JavaPlugin
         this.log.info("[ShipBattle] Sikeresen elind\u00edtva.");
         Logging.getLogger().info("started successfully");
         getServer().getPluginManager().registerEvents(new GuiInventory(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         try {
             this.economy = new EmeraldEconomy();
@@ -107,7 +115,8 @@ public class Main extends JavaPlugin
             e.printStackTrace();
         }
 
-        new ScoreboardManager().register();
+        getCommand("debug").setExecutor(new DebugCommand());
+        new Placeholders().register();
     }
     
     public void onDisable() {

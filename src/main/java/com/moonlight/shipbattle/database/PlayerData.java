@@ -1,9 +1,7 @@
 package com.moonlight.shipbattle.database;
 
 import com.moonlight.shipbattle.Main;
-import org.bukkit.Bukkit;
 
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,26 +22,26 @@ public class PlayerData {
         Main.getMain().economy().getKills(uuid).whenComplete((val, __) -> kills = val);
         Main.getMain().economy().getWins(uuid).whenComplete((val, __) -> wins = val);
         Main.getMain().economy().getLoses(uuid).whenComplete((val, __) -> loses = val);
-        Main.getMain().economy().getEmeralds(uuid).whenComplete((val, __) -> wins = val);
+        Main.getMain().economy().getEmeralds(uuid).whenComplete((val, __) -> emeralds = val);
     }
 
     public void setKills() {
-        economy.setKills(this.uuid, 1);
+        economy.setKills(this.uuid, this.kills + 1);
         this.kills += kills;
     }
 
     public void setWins() {
-        economy.setWins(this.uuid, 1);
-        this.kills += kills;
+        economy.setWins(this.uuid, this.wins + 1);
+        this.wins += kills;
     }
 
     public void setLoses() {
-        economy.setLoses(this.uuid, 1);
+        economy.setLoses(this.uuid, this.loses + 1);
         this.loses += loses;
     }
 
     public void setEmeralds(int emeralds) {
-        economy.setEmeralds(this.uuid, emeralds);
+        economy.setEmeralds(this.uuid, this.emeralds + emeralds);
         this.emeralds += emeralds;
     }
 

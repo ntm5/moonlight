@@ -1,6 +1,7 @@
 package com.moonlight.shipbattle.listeners;
 
 import com.moonlight.shipbattle.*;
+import com.moonlight.shipbattle.scoreboard.ScoreboardState;
 import com.moonlight.shipbattle.setup.SetupSession;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -80,6 +81,7 @@ public class MainListener implements Listener
                         player.sendMessage(Main.prefix + LangConfiguration.getString("sign.created").replace("$", arena2.getName()));
                         event.setCancelled(ArenaConfiguration.signsChanged = true);
                         arena2.updateSigns();
+                        Main.getMain().getScoreboardManager().setState(event.getPlayer().getUniqueId(), ScoreboardState.QUEUE);
                         return;
                     }
                 }

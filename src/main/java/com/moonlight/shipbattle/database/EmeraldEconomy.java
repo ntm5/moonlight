@@ -25,8 +25,8 @@ public class EmeraldEconomy {
     public void createTable() {
         CompletableFuture.runAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS playerdata (uuid VARCHAR(255), emeralds INT, kills INT, wins INT, loses INT, PRIMARY KEY(uuid))");
-                PreparedStatement statement2 = connection.prepareStatement("CREATE TABLE shipbattle (player VARCHAR(255), balance INT, PRIMARY KEY(player))");
+                PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `playerdata` (uuid VARCHAR(255), emeralds INT, kills INT, wins INT, loses INT, PRIMARY KEY(uuid))");
+                PreparedStatement statement2 = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `shipbattle` (player VARCHAR(255), balance INT, PRIMARY KEY(player))");
                 statement2.executeUpdate();
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -36,9 +36,10 @@ public class EmeraldEconomy {
     }
 
     public CompletableFuture<Boolean> exists(UUID uuid) {
-        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM `playerdata` WHERE uuid = ?");
+                Bukkit.getLogger().info("Checking if player (" + uuid.toString() + ") exists");
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM `playerdata` WHERE `uuid` = ?");
                 statement.setString(1, uuid.toString());
                 return statement.executeQuery().next();
             } catch (SQLException e) {
@@ -46,30 +47,25 @@ public class EmeraldEconomy {
             }
             return false;
         });
-        return future;
     }
 
     public void createFreshData(UUID uuid){
-        exists(uuid).whenComplete((bool, __) -> {
-            if (bool)
-                return;
-
             CompletableFuture.runAsync(() -> {
                 try {
-                    PreparedStatement statement = connection.prepareStatement("INSERT INTO `playerdata` VALUES (uuid, emeralds, kills, wins, loses) VALUES (?, 5, 5, 5, 5)");
+                    Bukkit.getLogger().info("Trying to create player data for " + uuid);
+                    PreparedStatement statement = connection.prepareStatement("INSERT IGNORE INTO `playerdata` (uuid, emeralds, kills, wins, loses) VALUES (?, 20, 0, 0, 0)");
                     statement.setString(1, uuid.toString());
                     statement.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             });
-        });
     }
 
     public CompletableFuture<Integer> getKills(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("SELECT kills FROM `playerdata` WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT `kills` FROM `playerdata` WHERE `uuid` = ?");
                 int kills = 0;
                 statement.setString(1, uuid.toString());
                 ResultSet set = statement.executeQuery();
@@ -88,7 +84,7 @@ public class EmeraldEconomy {
     public CompletableFuture<Integer> getWins(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("SELECT wins FROM `playerdata` WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT `wins` FROM `playerdata` WHERE `uuid` = ?");
                 int kills = 0;
                 statement.setString(1, uuid.toString());
                 ResultSet set = statement.executeQuery();
@@ -107,7 +103,7 @@ public class EmeraldEconomy {
     public CompletableFuture<Integer> getLoses(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("SELECT loses FROM `playerdata` WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT `loses` FROM `playerdata` WHERE `uuid` = ?");
                 statement.setString(1, uuid.toString());
                 int kills = 0;
                 statement.setString(1, uuid.toString());
@@ -127,7 +123,7 @@ public class EmeraldEconomy {
     public CompletableFuture<Integer> getEmeralds(UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("SELECT emeralds FROM `playerdata` WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT `emeralds` FROM `playerdata` WHERE `uuid` = ?");
                 int kills = 0;
                 statement.setString(1, uuid.toString());
                 ResultSet set = statement.executeQuery();
@@ -146,9 +142,10 @@ public class EmeraldEconomy {
     public void setKills(UUID uuid, int increment) {
         CompletableFuture.runAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `playerdata` VALUES (uuid, emeralds, kills, wins, loses) VALUES (?, ?, ?, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setInt(3, Main.getMain().getPlayerData().get(uuid).kills() + increment);
+                Bukkit.getLogger().info("Settings kills for player: " + uuid.toString() + " kills: " + (Main.getMain().getPlayerData().get(uuid).kills() + 1));
+                PreparedStatement statement = connection.prepareStatement("UPDATE `playerdata` SET kills=? WHERE uuid =?");
+                statement.setInt(1, increment);
+                statement.setString(2, uuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -159,9 +156,9 @@ public class EmeraldEconomy {
     public void setWins(UUID uuid, int increment) {
         CompletableFuture.runAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `playerdata` VALUES (uuid, emeralds, kills, wins, loses) VALUES (?, ?, ?, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setInt(4, Main.getMain().getPlayerData().get(uuid).wins() + increment);
+                PreparedStatement statement = connection.prepareStatement("UPDATE `playerdata` SET wins=? WHERE uuid =?");
+                statement.setInt(1, increment);
+                statement.setString(2, uuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -172,9 +169,9 @@ public class EmeraldEconomy {
     public void setLoses(UUID uuid, int increment) {
         CompletableFuture.runAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `playerdata` VALUES (uuid, emeralds, kills, wins, loses) VALUES (?, ?, ?, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setInt(5, Main.getMain().getPlayerData().get(uuid).loses() + increment);
+                PreparedStatement statement = connection.prepareStatement("UPDATE `playerdata` SET loses=? WHERE uuid=?");
+                statement.setInt(1, increment);
+                statement.setString(2, uuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -185,9 +182,9 @@ public class EmeraldEconomy {
     public void setEmeralds(UUID uuid, int increment) {
         CompletableFuture.runAsync(() -> {
             try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `playerdata` VALUES (uuid, emeralds, kills, wins, loses) VALUES (?, ?, ?, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setInt(2, Main.getMain().getPlayerData().get(uuid).loses() + increment);
+                PreparedStatement statement = connection.prepareStatement("UPDATE `playerdata` SET emeralds=? WHERE uuid=?");
+                statement.setInt(1, increment);
+                statement.setString(2, uuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

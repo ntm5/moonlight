@@ -108,6 +108,7 @@ public class EntityListener implements Listener {
                     }
                     if (player.getHealth() - event.getFinalDamage() <= 0.0) {
                         if (damager != null && damagerTeam != null) {
+                            Main.getMain().getPlayerData().get(damager.getUniqueId()).setKills();
                             game.getCommunicator().broadcastMessage(LangConfiguration.getString("event.damage.player_killed_by_player").replace("$a", team.getType().getPrefix()).replace("$b", player.getName()).replace("$c", damagerTeam.getType().getPrefix()).replace("$d", damager.getName()));
                             Score.getScore(damager).addKilledPlayer();
                             game.getCommunicator().sendNotification(damager, LangConfiguration.getString("notification.kill"));
@@ -175,7 +176,6 @@ public class EntityListener implements Listener {
                 Bukkit.getScheduler().runTaskLater((Plugin) Main.getMain(), () -> {
                     BarColor color = Utils.getPercentageBossBarColor(team.getCaptain().getVillager().getHealth() / Configuration.captainHealth);
                     team.getBossBar().setColor(color);
-                    return;
                 }, 2L);
                 game2.updateScoreboard();
             }
